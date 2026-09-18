@@ -42,7 +42,7 @@ function FilterSummary({ filters, start }: { filters: Filters; start: string | n
   return <div className="filters">{items.map(String).map(item => <span key={item}>{item}</span>)}</div>;
 }
 
-function JobCard({ job }: { job: Job }) {
+export function JobCard({ job }: { job: Job }) {
   let safeUrl: string | undefined;
   try { const parsed = new URL(job.job_url); if (parsed.protocol === "https:" && !parsed.username && !parsed.password) safeUrl = parsed.href; } catch { /* hide unsafe link */ }
   return <article className="job-card">
@@ -54,13 +54,14 @@ function JobCard({ job }: { job: Job }) {
 }
 
 function Message({ message }: { message: ChatMessage }) {
+  const builtAt = message.result?.jobs[0]?.mart_built_at;
   return <div className={`message ${message.role}${message.error ? " error" : ""}`}>
     <div className="bubble"><span className="role">{message.role === "user" ? "You" : "Job Scout"}</span><p>{message.text}</p></div>
     {message.result && <section className="results">
       <FilterSummary filters={message.result.filters} start={message.result.window.start}/>
       {message.result.capped && <p className="notice">Results were capped at 20.</p>}
       <div className="jobs">{message.result.jobs.map(job => <JobCard job={job} key={job.posting_key}/>)}</div>
-      <p className="fine-print">Newest eligible matches first. “Mid” includes titles with no stated level. “First observed” is when the daily scraper first saw a posting, not necessarily its publication date. Remote status does not establish where you may live.</p>
+      <p className="fine-print">Newest eligible matches first. “Mid” includes titles with no stated level. “First observed” is when the daily scraper first saw a posting, not necessarily its publication date. Remote status does not establish where you may live. Search table built: {builtAt ? new Date(builtAt).toLocaleString() : "unavailable"}.</p>
     </section>}
   </div>;
 }

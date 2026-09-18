@@ -14,7 +14,7 @@ The application is built and verified locally. The Cloudflare account and `worke
 - The production mart was rebuilt with source-aware remote values, `mart_built_at`, and a dbt-managed SELECT grant for the app role. Its 13 selected checks passed.
 - The production mart contains 178,237 open rows. The corrected remote source changes 18,601 rows compared with the old text-only flag; 39,251 rows are now flagged remote.
 - The dedicated `job_search_agent` login was verified to read only `analytics.mart_job_search`. Secrets exist only in gitignored local files and have not been uploaded to Cloudflare.
-- Three test files pass: 22 tests including real PostgreSQL query fixtures, visitor-cookie isolation and renewal, input rejection, and a live search through the app role. Type checking, the production build, and a Wrangler deployment dry run pass.
+- Four test files pass: 23 tests including real PostgreSQL query fixtures, visitor-cookie isolation and renewal, hostile row rendering, input rejection, and a live search through the app role. Type checking, the production build, and a Wrangler deployment dry run pass.
 - Cloudflare CLI login, official skills, five MCP definitions, and the account's `workers.dev` subdomain are configured.
 - Remote development connects successfully, but the Workers AI binding returned a Cloudflare internal error for simple no-tool calls to both Llama 3.3 and Llama 3.1. Cloudflare's status page did not list an active Workers AI incident. The deployed runtime still needs to be tested because both development modes share the same proxy path.
 

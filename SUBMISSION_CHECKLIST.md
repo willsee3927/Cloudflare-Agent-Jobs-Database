@@ -28,4 +28,4 @@ The Cloudflare application form asks for the GitHub repository URL for the optio
 - A same-origin React chat accepts natural-language requests and renders database-owned job cards.
 - The model can choose only six validated search parameters; fixed parameterized SQL queries only `analytics.mart_job_search`.
 - The database login can read that mart and no other `analytics` or `raw` table.
-- Type checking, production build, Wrangler dry run, 22 automated tests, targeted dbt build/tests, and a live read-only database search pass.
+- Type checking, production build, Wrangler dry run, 23 automated tests, targeted dbt build/tests, and a live read-only database search pass.

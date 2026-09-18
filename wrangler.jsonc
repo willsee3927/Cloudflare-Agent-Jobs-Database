@@ -1,0 +1,59 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cf-job-search-agent",
+  "main": "src/server.ts",
+  "compatibility_date": "2026-09-18",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "ai": {
+    "binding": "AI",
+    "remote": true
+  },
+  "assets": {
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/api/*",
+      "/agents/*"
+    ]
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "class_name": "JobAgent",
+        "name": "JobAgent"
+      },
+      {
+        "class_name": "UsageGuard",
+        "name": "UsageGuard"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "JobAgent",
+        "UsageGuard"
+      ]
+    }
+  ],
+  "vars": {
+    "AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "DAILY_AI_LIMIT": "300",
+    "DEV_MODE": "false"
+  },
+  "secrets": {
+    "required": [
+      "DATABASE_URL",
+      "SESSION_SECRET"
+    ]
+  },
+  "observability": {
+    "enabled": true,
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 0.05
+    }
+  }
+}

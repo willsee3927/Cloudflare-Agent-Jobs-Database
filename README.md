@@ -1,0 +1,83 @@
+# Cloudflare job-search agent
+
+A chat application for finding job postings in an existing job-board warehouse.
+
+Example request:
+
+> Mid range data engineering jobs posted in the last day.
+
+The model will translate the request into validated parameters. Application code will execute fixed queries against `analytics.mart_job_search` and return roughly ten matching postings with application links. Persistent conversation state will support follow-ups such as “only remote.”
+
+**Current status:** the application, fixed search query, durable memory, browser interface, and production warehouse changes are built and locally verified. The account's `workers.dev` subdomain is enabled. Permanent deployment is waiting on explicit approval to upload the two application secrets; the remote development proxy also returned a Cloudflare internal error for Workers AI that must be rechecked in the deployed runtime. See [STATUS.md](STATUS.md).
+
+## Assignment
+
+This project is being built for the [Cloudflare job posting](https://job-boards.greenhouse.io/cloudflare/jobs/8212060). The supplied assignment excerpt asks for an LLM, workflow/coordination, chat or voice input, memory/state, and AI coding prompt history.
+
+The implementation uses Workers AI for the model, an Agents SDK Durable Object for coordination and storage, and a browser chat interface served by a Worker. Job data remains in the existing Neon Postgres warehouse.
+
+The full posting was checked on September 18, 2026. Its assignment field asks for a GitHub repository URL and requires the AI coding prompt history; it does not list another assignment-specific upload field.
+
+## Design boundaries
+
+- The model chooses parameters, never SQL.
+- Database credentials grant read access only to the search mart.
+- Results are filtered and ranked by application-owned rules.
+- Conversations are isolated per visitor; initial memory is limited to the same browser.
+- Search uses the remote flag only; city, state, and country filters are out of scope.
+- Dates, inferred seniority, missing salary, and remote-flag limitations are labeled honestly.
+
+These boundaries are implemented in the server and verified by unit, PostgreSQL fixture, and live read-only search tests. [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) records the design and tradeoffs.
+
+## Project documents
+
+- [AGENTS.md](AGENTS.md): instructions for coding assistants working in this repository.
+- [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md): researched architecture and execution plan.
+- [STATUS.md](STATUS.md): present state, remaining checks, and the next action.
+- [DEVLOG.md](DEVLOG.md): dated record of completed work and verification.
+- [Prompt history](prompt-history/README.md): how coding conversations are saved for submission.
+- [SUBMISSION_CHECKLIST.md](SUBMISSION_CHECKLIST.md): final deployment and application-package checks.
+
+## Development setup
+
+Requirements: Node.js 20 or newer, a Cloudflare login, and access to the sibling warehouse's `.env.neon` file.
+
+```bash
+npm install
+npm run types
+npm test
+npm run check
+npm run build
+```
+
+`scripts/provision_database.py` creates or rotates the `job_search_agent` role, proves that it can read only `analytics.mart_job_search`, and writes gitignored local and production secret files. Run it with the sibling warehouse's Python environment:
+
+```bash
+../Job\ Board\ Scraper\ Fable/.venv/bin/python \
+  scripts/provision_database.py ../Job\ Board\ Scraper\ Fable/.env.neon
+```
+
+Run the optional production smoke test after provisioning:
+
+```bash
+set -a; source .dev.vars; set +a
+LIVE_DATABASE_URL="$DATABASE_URL" npm test
+```
+
+`npm run dev` uses remote Workers AI and therefore requires Cloudflare authentication and an enabled `workers.dev` account subdomain. Local secrets come from `.dev.vars`; never commit that file.
+
+For deployment, upload `.prod.secrets` with `npx wrangler secret bulk .prod.secrets`, then run `npm run deploy`. These operations transmit credentials and publish the application, so review the target Cloudflare account first.
+
+The warehouse is maintained separately in the sibling `Job Board Scraper Fable` repository. Its instructions remain authoritative for warehouse changes. The search mart grants SELECT to `job_search_agent` through dbt so that access survives table rebuilds.
+
+## Search behavior
+
+The six supported filters are `role_family`, `seniority`, `remote`, `posted_within`, `min_salary`, and `limit`. The default search covers seven UTC calendar dates and returns ten postings; the hard maximum is twenty.
+
+Results are ordered by a trustworthy effective date, then by posting key. Employer publication dates take priority. A private-board `first_seen` date is used only when the pipeline actually observed the posting arrive. Minimum salary means published annual USD minimum; postings without enough salary information are excluded when that filter is present.
+
+The interface discloses that unmarked titles classify as mid-level, first-observed dates are not publication dates, and a remote flag does not establish geographic eligibility.
+
+## Memory and deletion
+
+Each browser receives a server-signed random identity. Its Durable Object stores up to 200 messages, the last accepted filters, and only preferences the user explicitly asks to remember. Stored data expires after 30 days of inactivity. The interface can clear the conversation, clear preferences, or delete everything.

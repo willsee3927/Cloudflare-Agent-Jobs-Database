@@ -1,0 +1,52 @@
+{
+  "name": "cf-job-search-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A conversational search agent over a read-only job-postings mart",
+  "keywords": [
+    "agents",
+    "ai",
+    "cloudflare"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "deploy": "npm run build && wrangler deploy",
+    "types": "wrangler types env.d.ts",
+    "check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "agents": "^0.17.4",
+    "ai": "^6.0.197",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "workers-ai-provider": "^3.2.1",
+    "zod": "^4.4.3",
+    "@neondatabase/serverless": "^1.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/plugin-proposal-decorators": "^8.0.2",
+    "@cloudflare/vite-plugin": "^1.46.0",
+    "@rolldown/plugin-babel": "^0.2.3",
+    "@types/node": "^26.0.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "typescript": "^6.0.3",
+    "vite": "^8.1.0",
+    "wrangler": "^4.113.0",
+    "vitest": "^4.0.0",
+    "@electric-sql/pglite": "^0.3.0"
+  },
+  "allowScripts": {
+    "core-js-pure@3.49.0": true,
+    "esbuild@0.28.1": true,
+    "workerd@1.20260721.1": true,
+    "sharp@0.34.5": true,
+    "fsevents@2.3.3": true
+  }
+}

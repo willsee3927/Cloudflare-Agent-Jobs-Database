@@ -50,3 +50,9 @@ Append a dated entry after each completed step. Record what changed, why, what w
 - Isolated the failure with a development-only direct binding check: a one-word request with no tools failed for both Llama 3.3 and Llama 3.1. This rules out the job-search tool schema and provider wrapper as the immediate cause.
 - Reproduced the same result through both the Vite remote binding and Wrangler's remote preview, checked that the account lists the models and Workers AI dashboard, and found no active Workers AI incident on Cloudflare's status page.
 - Removed the diagnostic endpoint and restored required tool selection. Production deployment remains the next distinct runtime check; Cloudflare reference IDs are available in local development output if support is needed.
+
+## 2026-09-18 — Freshness and untrusted-row rendering
+
+- Added the search mart's actual build timestamp to each result set's explanatory text, with an explicit “unavailable” state when no matching row can supply it.
+- Added a server-rendering test with hostile HTML in the title and company plus a `javascript:` application URL. React escapes the row text, no script element is produced, and the unsafe link is replaced with “Application link unavailable.”
+- The full suite now passes 23/23, including the live read-only database smoke test. Type checking and the production build still pass, and the build output still removes the copied development secret file.

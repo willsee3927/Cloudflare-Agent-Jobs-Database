@@ -23,7 +23,7 @@ The application is deployed and verified at [cf-job-search-agent.wjcc91.workers.
 
 ## Next step
 
-The reviewed application source and warehouse mart model are pushed to their existing GitHub repositories. The final prompt-history export has been reviewed; publish it with these documentation updates, then make the private application repository accessible to Cloudflare reviewers when submitting the URL.
+The reviewed application source, warehouse mart model, redacted final prompt-history export, and reorganized documentation are pushed to their existing GitHub repositories. The application repository remains private until the user chooses how Cloudflare reviewers will access it.
 
 ## Confirmed scope change
 
@@ -46,7 +46,6 @@ The mart exposes its build time, carries the fact table's source-aware remote fl
 
 ## Checks still outstanding
 
-- Push the reviewed final prompt-history export and documentation updates to the application repository.
 - Make the private application repository accessible to Cloudflare reviewers when submitting its URL.
 - Put the repository URL in the application form; submitting the job application remains a user action.
 

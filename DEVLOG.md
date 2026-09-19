@@ -73,3 +73,4 @@ Append a dated entry after each completed step. Record what changed, why, what w
 - Committed the warehouse model, test, and evidence notes locally. Its scheduled build will keep the fix only after that commit reaches the warehouse repository's GitHub remote.
 - Corrected preference-saving so the active filters use the same application-grounded patch as the saved preferences.
 - Final type checking, production build, and all 25 tests passed; the final Worker version returned ten correctly filtered public results with a mart build timestamp. The reviewed application source and current partial prompt export were pushed to `willsee3927/Cloudflare-Agent-Jobs-Database` after explicit authorization.
+- After the user reviewed the effect on existing postings and explicitly authorized the warehouse destination, pushed the mart model to `willsee3927/Job-Board-Scraper-Fable` at `3206772`. This lets the scheduled build retain the deployed app's required column and grant.

@@ -18,7 +18,7 @@ The application is deployed and verified at [cf-job-search-agent.wjcc91.workers.
 - Cloudflare CLI login, official skills, five MCP definitions, and the account's `workers.dev` subdomain are configured.
 - The production Workers AI binding succeeds. Public evaluation covered the assignment example, remote follow-ups, salary removal, broader remote inclusion, unsupported location and skill requests, durable reloads, visitor isolation, all deletion controls, origin rejection, and closed generic agent routes.
 - Production logs redact cookies and omit request bodies, prompts, database credentials, and signing keys.
-- A later scheduled warehouse build briefly removed the unpushed `mart_built_at` column. The mart was rebuilt from the current local model (13/13 dbt checks), after which all 25 app tests and a public ten-result search passed. The warehouse model is committed locally; publishing it to GitHub is necessary before the next scheduled rebuild.
+- A later scheduled warehouse build briefly removed the then-unpushed `mart_built_at` column. The mart was rebuilt from the current model (13/13 dbt checks), after which all 25 app tests and a public ten-result search passed. The model is now pushed to GitHub for the next scheduled rebuild.
 
 ## Next step
 
@@ -45,8 +45,7 @@ The mart exposes its build time, carries the fact table's source-aware remote fl
 
 ## Checks still outstanding
 
-- Complete the prompt-history export and push it to the application repository.
-- Update the prompt-history export with the remaining deployment and verification conversation before submission.
+- Complete the prompt-history export with the remaining deployment and verification conversation, then push it to the application repository.
 - Put the repository URL in the application form; submitting the job application remains a user action.
 
 For completed work and evidence, see `DEVLOG.md`.

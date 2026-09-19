@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import secrets
 import sys
+import os
 from pathlib import Path
 from urllib.parse import quote
 
@@ -14,6 +15,20 @@ import psycopg2
 from dotenv import dotenv_values
 
 ROLE = "job_search_agent"
+
+
+def write_secret_file(path: Path, content: str) -> None:
+    """Create or replace a local secret file readable only by its owner."""
+    flags = os.O_WRONLY | os.O_CREAT | os.O_TRUNC | getattr(os, "O_NOFOLLOW", 0)
+    fd = os.open(path, flags, 0o600)
+    try:
+        os.fchmod(fd, 0o600)
+        with os.fdopen(fd, "w") as stream:
+            fd = -1
+            stream.write(content)
+    finally:
+        if fd >= 0:
+            os.close(fd)
 
 
 def main() -> None:
@@ -61,8 +76,8 @@ def main() -> None:
     database = quote(str(values["POSTGRES_DB"]), safe="")
     url = f"postgresql://{user}:{encoded_password}@{values['POSTGRES_HOST']}:{values['POSTGRES_PORT']}/{database}?sslmode=require"
     session_secret = secrets.token_urlsafe(48)
-    Path(".dev.vars").write_text(f"DATABASE_URL={url}\nSESSION_SECRET={session_secret}\nDEV_MODE=true\n")
-    Path(".prod.secrets").write_text(f"DATABASE_URL={url}\nSESSION_SECRET={session_secret}\n")
+    write_secret_file(Path(".dev.vars"), f"DATABASE_URL={url}\nSESSION_SECRET={session_secret}\nDEV_MODE=true\n")
+    write_secret_file(Path(".prod.secrets"), f"DATABASE_URL={url}\nSESSION_SECRET={session_secret}\n")
     print("Created/rotated job_search_agent and verified it can read only analytics.mart_job_search.")
     print("Wrote local and production secret files; both are ignored by git.")
 

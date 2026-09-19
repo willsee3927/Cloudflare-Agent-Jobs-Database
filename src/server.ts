@@ -112,9 +112,8 @@ export class JobAgent extends Agent<AppEnv> {
       for (let attempt = 0; attempt < 2; attempt++) {
         if (!await guard.reserve(this.name, "", true)) return json({ error: "The demo's daily AI allowance has been reached. Please try again tomorrow (UTC)." }, 429);
         try { action = await interpret(this.env.AI, this.env.AI_MODEL, history, state.filters, state.preferences, attempt > 0); break; }
-        catch (error) {
-          const detail = error instanceof Error ? `${error.name}: ${error.message}`.slice(0, 500) : "unknown error";
-          console.warn(JSON.stringify({ event: "model_action_failed", attempt: attempt + 1, detail }));
+        catch {
+          console.warn(JSON.stringify({ event: "model_action_failed", attempt: attempt + 1 }));
         }
       }
       const assistant: ChatMessage = { id: crypto.randomUUID(), role: "assistant", at: new Date().toISOString(), text: "" };
@@ -131,9 +130,9 @@ export class JobAgent extends Agent<AppEnv> {
           assistant.result = { filters, capped, jobs, window: dateWindow(filters, now), searchedAt: now.toISOString() };
           assistant.text = jobs.length ? `Here ${jobs.length === 1 ? "is 1 matching posting" : `are ${jobs.length} matching postings`}, newest first.` : "No postings matched these filters. Try a wider date window or remove a restriction.";
           state.filters = filters;
-          console.log(JSON.stringify({ event: "search", elapsedMs: Date.now() - started, filters, count: jobs.length }));
+          console.log(JSON.stringify({ event: "search", elapsedMs: Date.now() - started, count: jobs.length }));
         } catch {
-          assistant.text = "The job database couldn't complete this search. Please try again. This is a connection error, not a finding that no jobs match.";
+          assistant.text = "The job database couldn't complete this search. Please try again. This is a service error, not a finding that no jobs match.";
           assistant.error = true;
           console.warn(JSON.stringify({ event: "search_failed", elapsedMs: Date.now() - started }));
         }

@@ -18,4 +18,8 @@ Capture the initial research/planning conversation, this documentation setup, an
 
 Runtime system prompts belong in the application's source as well. They are separate from the coding-assistance history and do not replace it. Private conversations from people using the deployed app do not belong in this folder.
 
-This README is guidance, not a transcript. At folder inspection on 2026-09-18, no chat exports had been saved here yet. Before submission, review the dated files for missing sessions and add a short index linking the actual exports.
+## Transcript index
+
+- [September 18, 2026 — planning and implementation, partial export](prompt%2020260918.md)
+
+This README is guidance, not a transcript. The indexed file is the user-provided conversation export; it has not been reconstructed or rewritten. It ends as production deployment begins. Add the remaining conversation before submitting the assignment.

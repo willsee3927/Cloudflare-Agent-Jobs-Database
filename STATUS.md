@@ -4,23 +4,25 @@ Last updated: 2026-09-18.
 
 ## Where we are
 
-The application is built and verified locally. The Cloudflare account and `workers.dev` subdomain are ready, but permanent deployment is not complete.
+The application is deployed and verified at [cf-job-search-agent.wjcc91.workers.dev](https://cf-job-search-agent.wjcc91.workers.dev).
 
 - The initial request and current Cloudflare documentation informed `IMPLEMENTATION_PLAN.md`.
 - The production mart was rebuilt and checked through the dedicated read-only application role.
 - `AGENTS.md`, `README.md`, `DEVLOG.md`, and the prompt-history guide are in place.
-- The user created `prompt-history/` and is saving the chats there. No conversation exports were present when the folder was inspected for this setup step.
+- A user-provided coding-conversation export is saved in `prompt-history/` and indexed. It ends before the production deployment work, so a final export is still needed. The present file was checked for common credential patterns.
 - The React chat interface, Agents SDK Durable Objects, Workers AI interpretation, fixed parameterized search, persistent memory, deletion controls, signed visitor identity, rate limits, and daily AI cap are implemented.
 - The production mart was rebuilt with source-aware remote values, `mart_built_at`, and a dbt-managed SELECT grant for the app role. Its 13 selected checks passed.
 - The production mart contains 178,237 open rows. The corrected remote source changes 18,601 rows compared with the old text-only flag; 39,251 rows are now flagged remote.
-- The dedicated `job_search_agent` login was verified to read only `analytics.mart_job_search`. Secrets exist only in gitignored local files and have not been uploaded to Cloudflare.
-- Four test files pass: 23 tests including real PostgreSQL query fixtures, visitor-cookie isolation and renewal, hostile row rendering, input rejection, and a live search through the app role. Type checking, the production build, and a Wrangler deployment dry run pass.
+- The dedicated `job_search_agent` login was verified to read only `analytics.mart_job_search`. Its URL and the session-signing key are stored by Cloudflare as encrypted Worker secrets; local copies remain gitignored.
+- Four test files pass: 25 tests including real PostgreSQL query fixtures, deterministic grounding of explicit user filters, visitor-cookie isolation and renewal, hostile row rendering, input rejection, and a live search through the app role. Type checking and the production build pass.
 - Cloudflare CLI login, official skills, five MCP definitions, and the account's `workers.dev` subdomain are configured.
-- Remote development connects successfully, but the Workers AI binding returned a Cloudflare internal error for simple no-tool calls to both Llama 3.3 and Llama 3.1. Cloudflare's status page did not list an active Workers AI incident. The deployed runtime still needs to be tested because both development modes share the same proxy path.
+- The production Workers AI binding succeeds. Public evaluation covered the assignment example, remote follow-ups, salary removal, broader remote inclusion, unsupported location and skill requests, durable reloads, visitor isolation, all deletion controls, origin rejection, and closed generic agent routes.
+- Production logs redact cookies and omit request bodies, prompts, database credentials, and signing keys.
+- A later scheduled warehouse build briefly removed the unpushed `mart_built_at` column. The mart was rebuilt from the current local model (13/13 dbt checks), after which all 25 app tests and a public ten-result search passed. The warehouse model is committed locally; publishing it to GitHub is necessary before the next scheduled rebuild.
 
 ## Next step
 
-After explicit approval to transmit the database URL and session-signing key to the logged-in Cloudflare account, upload the two secrets, deploy, and run browser checks against the public URL. If Workers AI also fails in production, use the captured reference IDs for Cloudflare support and keep the safe error response active.
+Commit and push the final reviewed source, then add a complete prompt-history export and place the repository URL in the application form.
 
 ## Confirmed scope change
 
@@ -43,8 +45,8 @@ The mart exposes its build time, carries the fact table's source-aware remote fl
 
 ## Checks still outstanding
 
-- Upload the two production secrets after explicit approval.
-- Deploy and verify model/tool integration, memory persistence, visitor isolation, clearing, and error handling in the public runtime; resolve or escalate the Workers AI internal error if it reproduces there.
-- Finish the prompt-history export and index before submission.
+- Push the committed warehouse mart fix and final reviewed application source to their existing GitHub repositories after explicit destination authorization.
+- Update the prompt-history export with the remaining deployment and verification conversation before submission.
+- Put the repository URL in the application form; submitting the job application remains a user action.
 
 For completed work and evidence, see `DEVLOG.md`.

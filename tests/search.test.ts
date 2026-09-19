@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeAll, afterAll } from "vitest";
 import { PGlite } from "@electric-sql/pglite";
-import { DEFAULT_FILTERS, mergeFilters, dateWindow, SEARCH_SQL, searchParameters, safeJobUrl } from "../src/search";
+import { DEFAULT_FILTERS, SENIORITIES, constrainExplicitFilters, mergeFilters, dateWindow, SEARCH_SQL, searchParameters, safeJobUrl } from "../src/search";
 
 describe("search boundary", () => {
   it("retains filters across follow-ups and explicitly clears remote", () => {
@@ -16,6 +16,25 @@ describe("search boundary", () => {
   });
   it("caps oversized result requests and preserves explicit zero salary", () => {
     expect(mergeFilters(DEFAULT_FILTERS, { limit: 50, min_salary: 0 })).toMatchObject({ capped: true, filters: { limit: 20, min_salary: 0 } });
+  });
+  it("prevents broadening explicit level and date phrases", () => {
+    expect(constrainExplicitFilters("Mid-level data engineering jobs from the last day", {
+      seniority: ["mid", "junior", "intern"], posted_within: "week",
+    })).toEqual({ role_family: ["Data engineering"], seniority: ["mid"], posted_within: "day" });
+    expect(constrainExplicitFilters("Show me mid or below roles from the last seven days", {
+      seniority: ["mid"], posted_within: "day",
+    })).toEqual({ seniority: ["intern", "junior", "mid"], posted_within: "week" });
+  });
+  it("grounds salary searches and preserves unrelated filters in follow-ups", () => {
+    expect(constrainExplicitFilters("Senior ML or AI roles paying at least $150,000", {
+      role_family: ["DS / ML / AI"], seniority: [...SENIORITIES], min_salary: null,
+    })).toEqual({ role_family: ["DS / ML / AI"], seniority: ["senior"], min_salary: 150000 });
+    expect(constrainExplicitFilters("Remove the salary minimum and show only remote", {
+      role_family: null, seniority: null, remote: true, min_salary: null,
+    })).toEqual({ remote: true, min_salary: null });
+    expect(constrainExplicitFilters("Include all jobs", {
+      role_family: ["DS / ML / AI"], seniority: ["leadership"], remote: true,
+    })).toEqual({ remote: null });
   });
   it("computes UTC calendar ranges across month boundaries", () => {
     const now = new Date("2026-03-01T23:30:00-07:00");

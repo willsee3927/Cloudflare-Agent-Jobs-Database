@@ -16,6 +16,7 @@ The Cloudflare application form asks for the GitHub repository URL for the optio
 - [x] Commit and push the reviewed application source and currently available partial prompt history to GitHub.
 - [ ] Add and push the remaining deployment conversation to `prompt-history/` before submission.
 - [ ] Run the final prompt-history privacy review after the remaining conversation is added.
+- [ ] Make the private application repository accessible to Cloudflare reviewers when submitting its URL.
 - [x] Push the warehouse mart change to its GitHub repository before the next scheduled build, so the search schema and grant persist.
 - [ ] Put the repository URL in the application form's optional-assignment field.
 

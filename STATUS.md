@@ -22,7 +22,7 @@ The application is deployed and verified at [cf-job-search-agent.wjcc91.workers.
 
 ## Next step
 
-The reviewed application source is pushed to GitHub. Add the remainder of the prompt-history export before submission. The warehouse model is rebuilt and committed locally, but its scheduled refresh will preserve the fix only once that warehouse commit is pushed.
+The reviewed application source and warehouse mart model are pushed to their existing GitHub repositories. Add the remainder of the prompt-history export before submission.
 
 ## Confirmed scope change
 
@@ -45,7 +45,7 @@ The mart exposes its build time, carries the fact table's source-aware remote fl
 
 ## Checks still outstanding
 
-- Push the committed warehouse mart fix to its existing GitHub repository if authorized; the application repository is already pushed.
+- Complete the prompt-history export and push it to the application repository.
 - Update the prompt-history export with the remaining deployment and verification conversation before submission.
 - Put the repository URL in the application form; submitting the job application remains a user action.
 

@@ -13,7 +13,8 @@ The Cloudflare application form asks for the GitHub repository URL for the optio
 - [x] Exercise Clear conversation, Clear preferences, and Forget everything.
 - [x] Review Cloudflare logs and traces for runtime failures without exposing prompts or secrets.
 - [ ] Export the complete AI coding conversation into `prompt-history/`, redact credentials, and add a dated index. The indexed export currently ends before production deployment.
-- [ ] Commit and push the reviewed source and prompt history to GitHub.
+- [x] Commit and push the reviewed application source and currently available partial prompt history to GitHub.
+- [ ] Add and push the remaining deployment conversation to `prompt-history/` before submission.
 - [ ] Push the warehouse mart change to its GitHub repository before the next scheduled build, so the search schema and grant persist.
 - [ ] Put the repository URL in the application form's optional-assignment field.
 

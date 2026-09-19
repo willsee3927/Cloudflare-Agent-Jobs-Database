@@ -74,3 +74,10 @@ Append a dated entry after each completed step. Record what changed, why, what w
 - Corrected preference-saving so the active filters use the same application-grounded patch as the saved preferences.
 - Final type checking, production build, and all 25 tests passed; the final Worker version returned ten correctly filtered public results with a mart build timestamp. The reviewed application source and current partial prompt export were pushed to `willsee3927/Cloudflare-Agent-Jobs-Database` after explicit authorization.
 - After the user reviewed the effect on existing postings and explicitly authorized the warehouse destination, pushed the mart model to `willsee3927/Job-Board-Scraper-Fable` at `3206772`. This lets the scheduled build retain the deployed app's required column and grant.
+
+## 2026-09-18 — Final security and documentation sweep
+
+- Checked tracked files, Git history, and the production build for the exact Neon URL and signing key: neither value appeared. The development and production secret files are Git-ignored and absent from the build, but their local permissions were too broad; changed both to owner-only and updated provisioning to maintain that mode.
+- Removed model error text and user-selected filters from application logs. Database errors remain a safe service-error message in the browser, without suggesting an empty result.
+- Found one account email and one dashboard account identifier repeated in the partial user-provided prompt export. Replaced them with explicit redaction markers. The repository is private, but its earlier Git commit still contains those identifiers; clean that history before changing repository visibility or sharing it publicly.
+- Updated the README with the working Python invocation, secret rotation warning, and the application's security and privacy boundaries. The final conversation export remains intentionally deferred until the end of development.

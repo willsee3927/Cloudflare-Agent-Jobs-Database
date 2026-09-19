@@ -6,7 +6,7 @@ Example request:
 
 > Mid range data engineering jobs posted in the last day.
 
-The model will translate the request into validated parameters. Application code will execute fixed queries against `analytics.mart_job_search` and return roughly ten matching postings with application links. Persistent conversation state will support follow-ups such as “only remote.”
+The model translates the request into validated parameters. Application code executes fixed queries against `analytics.mart_job_search` and returns roughly ten matching postings with application links. Persistent conversation state supports follow-ups such as “only remote.”
 
 **Current status:** the application is deployed at [cf-job-search-agent.wjcc91.workers.dev](https://cf-job-search-agent.wjcc91.workers.dev). Its fixed search query, durable memory, browser interface, Workers AI integration, and production warehouse boundary have been verified in the public runtime. See [STATUS.md](STATUS.md).
 
@@ -50,11 +50,10 @@ npm run check
 npm run build
 ```
 
-`scripts/provision_database.py` creates or rotates the `job_search_agent` role, proves that it can read only `analytics.mart_job_search`, and writes gitignored local and production secret files. Run it with the sibling warehouse's Python environment:
+`scripts/provision_database.py` creates or rotates the `job_search_agent` role, proves that it can read only `analytics.mart_job_search`, and writes gitignored, owner-only local secret files. It requires `psycopg2` and `python-dotenv` from the warehouse's Python dependencies. Run it from this repository's root:
 
 ```bash
-../Job\ Board\ Scraper\ Fable/.venv/bin/python \
-  scripts/provision_database.py ../Job\ Board\ Scraper\ Fable/.env.neon
+python3 scripts/provision_database.py ../Job\ Board\ Scraper\ Fable/.env.neon
 ```
 
 Run the optional production smoke test after provisioning:
@@ -66,7 +65,7 @@ LIVE_DATABASE_URL="$DATABASE_URL" npm test
 
 `npm run dev` uses remote Workers AI and therefore requires Cloudflare authentication and an enabled `workers.dev` account subdomain. Local secrets come from `.dev.vars`; never commit that file.
 
-For deployment, upload `.prod.secrets` with `npx wrangler secret bulk .prod.secrets`, then run `npm run deploy`. The production Worker already has both encrypted secrets; repeat the secret upload only when rotating them.
+For deployment, upload `.prod.secrets` with `npx wrangler secret bulk .prod.secrets`, then run `npm run deploy`. The production Worker already has both encrypted secrets. **Provisioning rotates the database password and session-signing key**, so do not rerun it without immediately updating both Worker secrets; rotation also ends existing browser sessions.
 
 The warehouse is maintained separately in the sibling `Job Board Scraper Fable` repository. Its instructions remain authoritative for warehouse changes. The search mart grants SELECT to `job_search_agent` through dbt so that access survives table rebuilds.
 
@@ -81,3 +80,9 @@ The interface discloses that unmarked titles classify as mid-level, first-observ
 ## Memory and deletion
 
 Each browser receives a server-signed random identity. Its Durable Object stores up to 200 messages, the last accepted filters, and only preferences the user explicitly asks to remember. Stored data expires after 30 days of inactivity. The interface can clear the conversation, clear preferences, or delete everything.
+
+## Security and privacy
+
+The model receives the conversation and validated filter state, but not database credentials or job rows. Only application code runs the fixed SQL query, using a database login granted SELECT on the search mart alone. The browser receives job cards, never credentials. Signed, HttpOnly, same-site cookies isolate conversations; write requests require the same origin. Request size, model calls, search time, results, and retained history are bounded.
+
+Local `.dev.vars` and `.prod.secrets` files are owner-readable only and ignored by Git. The build removes the copied development secret file before deployment. Application logs report event type, elapsed time, and result count without recording prompts, filters, database errors, or credentials. The currently indexed [prompt-history export](prompt-history/README.md) is partial; the final conversation export will be added at the end of development.

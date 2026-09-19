@@ -81,3 +81,10 @@ Append a dated entry after each completed step. Record what changed, why, what w
 - Removed model error text and user-selected filters from application logs. Database errors remain a safe service-error message in the browser, without suggesting an empty result.
 - Found one account email and one dashboard account identifier repeated in the partial user-provided prompt export. Replaced them with explicit redaction markers, then rewrote the private repository's sole branch so no reachable commit retains the originals. Verified the final tree matches the tested local tree and the rewritten history has no matching identifiers.
 - Updated the README with the working Python invocation, secret rotation warning, and the application's security and privacy boundaries. The final conversation export remains intentionally deferred until the end of development.
+
+## 2026-09-18 — Final conversation export and document layout
+
+- The user replaced the partial coding conversation with a fuller export through deployment and the security review. The file reintroduced a Cloudflare account email and dashboard account identifier in copied tool output; those exact values were replaced with explicit redaction markers while preserving the remaining conversation.
+- Checked the export against the actual application database URL and signing key and the warehouse owner's password without printing their values. None occurred. Scans also found no remaining email address, dashboard account identifier, credential-bearing URL, session cookie value, private key, or GitHub token in the export.
+- Kept the user's move of `DEVLOG.md`, `IMPLEMENTATION_PLAN.md`, `STATUS.md`, and `SUBMISSION_CHECKLIST.md` into `docs/`. Updated root instructions, README links, the prompt-history index, and current-state wording to match the new layout.
+- The code was unchanged in this step; verify Markdown links and the final Git diff before publishing the submission package.

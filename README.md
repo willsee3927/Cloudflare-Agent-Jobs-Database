@@ -8,7 +8,7 @@ Example request:
 
 The model translates the request into validated parameters. Application code executes fixed queries against `analytics.mart_job_search` and returns roughly ten matching postings with application links. Persistent conversation state supports follow-ups such as “only remote.”
 
-**Current status:** the application is deployed at [cf-job-search-agent.wjcc91.workers.dev](https://cf-job-search-agent.wjcc91.workers.dev). Its fixed search query, durable memory, browser interface, Workers AI integration, and production warehouse boundary have been verified in the public runtime. See [STATUS.md](STATUS.md).
+**Current status:** the application is deployed at [cf-job-search-agent.wjcc91.workers.dev](https://cf-job-search-agent.wjcc91.workers.dev). Its fixed search query, durable memory, browser interface, Workers AI integration, and production warehouse boundary have been verified in the public runtime. See [current status](docs/STATUS.md).
 
 ## Assignment
 
@@ -27,16 +27,16 @@ The full posting was checked on September 18, 2026. Its assignment field asks fo
 - Search uses the remote flag only; city, state, and country filters are out of scope.
 - Dates, inferred seniority, missing salary, and remote-flag limitations are labeled honestly.
 
-These boundaries are implemented in the server and verified by unit, PostgreSQL fixture, and live read-only search tests. [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) records the design and tradeoffs.
+These boundaries are implemented in the server and verified by unit, PostgreSQL fixture, and live read-only search tests. The [implementation plan](docs/IMPLEMENTATION_PLAN.md) records the design and tradeoffs.
 
 ## Project documents
 
 - [AGENTS.md](AGENTS.md): instructions for coding assistants working in this repository.
-- [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md): researched architecture and execution plan.
-- [STATUS.md](STATUS.md): present state, remaining checks, and the next action.
-- [DEVLOG.md](DEVLOG.md): dated record of completed work and verification.
-- [Prompt history](prompt-history/README.md): how coding conversations are saved for submission.
-- [SUBMISSION_CHECKLIST.md](SUBMISSION_CHECKLIST.md): final deployment and application-package checks.
+- [Implementation plan](docs/IMPLEMENTATION_PLAN.md): researched architecture and execution plan.
+- [Current status](docs/STATUS.md): present state and remaining submission steps.
+- [Development log](docs/DEVLOG.md): dated record of completed work and verification.
+- [Prompt history](prompt-history/README.md): indexed coding conversation for submission.
+- [Submission checklist](docs/SUBMISSION_CHECKLIST.md): final deployment and application-package checks.
 
 ## Development setup
 
@@ -85,4 +85,4 @@ Each browser receives a server-signed random identity. Its Durable Object stores
 
 The model receives the conversation and validated filter state, but not database credentials or job rows. Only application code runs the fixed SQL query, using a database login granted SELECT on the search mart alone. The browser receives job cards, never credentials. Signed, HttpOnly, same-site cookies isolate conversations; write requests require the same origin. Request size, model calls, search time, results, and retained history are bounded.
 
-Local `.dev.vars` and `.prod.secrets` files are owner-readable only and ignored by Git. The build removes the copied development secret file before deployment. Application logs report event type, elapsed time, and result count without recording prompts, filters, database errors, or credentials. The currently indexed [prompt-history export](prompt-history/README.md) is partial; the final conversation export will be added at the end of development.
+Local `.dev.vars` and `.prod.secrets` files are owner-readable only and ignored by Git. The build removes the copied development secret file before deployment. Application logs report event type, elapsed time, and result count without recording prompts, filters, database errors, or credentials. The [prompt-history export](prompt-history/README.md) has been reviewed for credentials and private account identifiers.

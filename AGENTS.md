@@ -4,8 +4,8 @@ These instructions apply throughout this repository.
 
 ## Start here
 
-- Read `STATUS.md` for current progress, then `IMPLEMENTATION_PLAN.md` for the design and acceptance criteria.
-- Use `README.md` as the project introduction and `DEVLOG.md` for completed work.
+- Read `docs/STATUS.md` for current progress, then `docs/IMPLEMENTATION_PLAN.md` for the design and acceptance criteria.
+- Use `README.md` as the project introduction and `docs/DEVLOG.md` for completed work.
 - Follow the user's current instructions when they change the plan. Keep proposed defaults distinct from confirmed decisions and implemented behavior.
 
 ## Purpose and scope
@@ -38,7 +38,7 @@ Keep the first version small. Additional services or features need a concrete re
 ## Verification and records
 
 - Test behavior at the relevant boundary: filter validation, query binding, data semantics, memory isolation, and failure handling. Documentation-only edits need link and consistency checks, not application tests.
-- Keep `STATUS.md` current after each completed step; append an evidence-based entry to `DEVLOG.md`.
+- Keep `docs/STATUS.md` current after each completed step; append an evidence-based entry to `docs/DEVLOG.md`.
 - Preserve AI coding prompt history using `prompt-history/README.md`. The user is saving chats; do not overwrite exports or invent missing transcripts.
 - Keep setup and test commands in `README.md` accurate as the application is built. Do not document unverified commands as working.
 - Never mark a planned feature as delivered merely because its documentation exists.

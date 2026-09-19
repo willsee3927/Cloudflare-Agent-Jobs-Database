@@ -20,6 +20,6 @@ Runtime system prompts belong in the application's source as well. They are sepa
 
 ## Transcript index
 
-- [September 18, 2026 — planning and implementation, partial export](prompt%2020260918.md)
+- [September 18, 2026 — planning, implementation, deployment, and security review](prompt%2020260918.md)
 
-This README is guidance, not a transcript. The indexed file is the user-provided conversation export with the Cloudflare account email and dashboard account identifier replaced by explicit redaction markers. The conversation itself has not been reconstructed. It ends as production deployment begins; add the remaining conversation at the end of development, then review that export for private information before submitting the assignment.
+This README is guidance, not a transcript. The indexed file is the user-provided conversation export with the Cloudflare account email and dashboard account identifier replaced by explicit redaction markers. The conversation itself has not been reconstructed.

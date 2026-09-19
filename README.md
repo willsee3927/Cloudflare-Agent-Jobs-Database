@@ -8,7 +8,7 @@ Example request:
 
 The model will translate the request into validated parameters. Application code will execute fixed queries against `analytics.mart_job_search` and return roughly ten matching postings with application links. Persistent conversation state will support follow-ups such as “only remote.”
 
-**Current status:** the application, fixed search query, durable memory, browser interface, and production warehouse changes are built and locally verified. The account's `workers.dev` subdomain is enabled. Permanent deployment is waiting on explicit approval to upload the two application secrets; the remote development proxy also returned a Cloudflare internal error for Workers AI that must be rechecked in the deployed runtime. See [STATUS.md](STATUS.md).
+**Current status:** the application is deployed at [cf-job-search-agent.wjcc91.workers.dev](https://cf-job-search-agent.wjcc91.workers.dev). Its fixed search query, durable memory, browser interface, Workers AI integration, and production warehouse boundary have been verified in the public runtime. See [STATUS.md](STATUS.md).
 
 ## Assignment
 
@@ -66,7 +66,7 @@ LIVE_DATABASE_URL="$DATABASE_URL" npm test
 
 `npm run dev` uses remote Workers AI and therefore requires Cloudflare authentication and an enabled `workers.dev` account subdomain. Local secrets come from `.dev.vars`; never commit that file.
 
-For deployment, upload `.prod.secrets` with `npx wrangler secret bulk .prod.secrets`, then run `npm run deploy`. These operations transmit credentials and publish the application, so review the target Cloudflare account first.
+For deployment, upload `.prod.secrets` with `npx wrangler secret bulk .prod.secrets`, then run `npm run deploy`. The production Worker already has both encrypted secrets; repeat the secret upload only when rotating them.
 
 The warehouse is maintained separately in the sibling `Job Board Scraper Fable` repository. Its instructions remain authoritative for warehouse changes. The search mart grants SELECT to `job_search_agent` through dbt so that access survives table rebuilds.
 

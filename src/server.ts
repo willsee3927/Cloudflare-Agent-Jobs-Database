@@ -3,7 +3,7 @@ import { DurableObject } from "cloudflare:workers";
 import { z } from "zod";
 import { searchJobs } from "./database";
 import { interpret, type Action } from "./model";
-import { DEFAULT_FILTERS, mergeFilters, dateWindow } from "./search";
+import { DEFAULT_FILTERS, constrainExplicitFilters, mergeFilters, dateWindow } from "./search";
 import { issueSession, verifySession, sessionCookie, sameOrigin, RETENTION_MS } from "./session";
 import type { Conversation, ChatMessage } from "./types";
 
@@ -122,7 +122,8 @@ export class JobAgent extends Agent<AppEnv> {
         assistant.text = "I couldn't interpret that request reliably. Please try a simpler request with a role, level, remote preference, date window, or salary minimum.";
         assistant.error = true;
       } else if (action.type === "search") {
-        const { filters, capped } = mergeFilters(state.filters, action.patch);
+        const guardedPatch = constrainExplicitFilters(input.data.text, action.patch);
+        const { filters, capped } = mergeFilters(state.filters, guardedPatch);
         const started = Date.now();
         try {
           const now = new Date();
@@ -137,10 +138,11 @@ export class JobAgent extends Agent<AppEnv> {
           console.warn(JSON.stringify({ event: "search_failed", elapsedMs: Date.now() - started }));
         }
       } else if (action.type === "remember") {
-        const validated = mergeFilters(mergeFilters(DEFAULT_FILTERS, state.preferences).filters, action.patch);
-        state.preferences = { ...state.preferences, ...action.patch };
+        const guardedPatch = constrainExplicitFilters(input.data.text, action.patch);
+        const validated = mergeFilters(mergeFilters(DEFAULT_FILTERS, state.preferences).filters, guardedPatch);
+        state.preferences = { ...state.preferences, ...guardedPatch };
         if (state.preferences.limit != null) state.preferences.limit = validated.filters.limit;
-        state.filters = mergeFilters(state.filters, action.patch).filters;
+        state.filters = mergeFilters(state.filters, guardedPatch).filters;
         assistant.text = "Saved those search preferences for this browser. You can review or remove them in Memory.";
       } else if (action.type === "forget") {
         state.preferences = {}; state.filters = { ...DEFAULT_FILTERS };

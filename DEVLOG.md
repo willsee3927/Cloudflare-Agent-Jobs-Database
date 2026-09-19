@@ -56,3 +56,19 @@ Append a dated entry after each completed step. Record what changed, why, what w
 - Added the search mart's actual build timestamp to each result set's explanatory text, with an explicit “unavailable” state when no matching row can supply it.
 - Added a server-rendering test with hostile HTML in the title and company plus a `javascript:` application URL. React escapes the row text, no script element is produced, and the unsafe link is replaced with “Application link unavailable.”
 - The full suite now passes 23/23, including the live read-only database smoke test. Type checking and the production build still pass, and the build output still removes the copied development secret file.
+
+## 2026-09-18 — Production deployment and evaluation
+
+- Uploaded the read-only Neon URL and random session-signing key as encrypted Cloudflare Worker secrets after explicit user authorization, then deployed the application to `https://cf-job-search-agent.wjcc91.workers.dev`.
+- Confirmed Workers AI succeeds in production. The assignment example resolves to Data engineering, mid-level, and the one-day window; “Only remote” preserves those filters and adds the remote constraint.
+- Added an application-owned grounding layer for explicit role, seniority, date, salary, result-count, and remote language. This prevents the model from broadening explicit requests and keeps unrelated filters during follow-ups. The expanded suite contains 25 tests.
+- Public checks passed for salary filters and removal, inclusive seniority, unsupported location and skill requests, same-browser reload memory, separate-browser isolation, conversation/preference/full deletion, same-origin enforcement, and closed generic agent routes.
+- Reviewed live tail output. Cloudflare redacts the session cookie, and application telemetry excludes prompts, request bodies, database credentials, and signing keys.
+- Added the user-provided prompt-history export to its dated index and checked it for common credential patterns without changing its contents. The file ends as production deployment begins, so a final export is still required before submission.
+
+## 2026-09-18 — Scheduled warehouse rebuild exposed a source-control gap
+
+- After the final Worker deploy, the public search returned a database connection error. A repeat of the live read-only test gave the precise cause: the scheduled warehouse build had replaced `mart_job_search` from GitHub's older model, which lacks `mart_built_at`.
+- Rebuilt the production mart from the current local model. All 13 selected dbt nodes, all 25 application tests, and the public assignment search then passed; the public query returned ten matching postings.
+- Committed the warehouse model, test, and evidence notes locally. Its scheduled build will keep the fix only after that commit reaches the warehouse repository's GitHub remote.
+- Corrected preference-saving so the active filters use the same application-grounded patch as the saved preferences.
